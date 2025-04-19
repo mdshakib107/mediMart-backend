@@ -1,29 +1,29 @@
 import { Router } from 'express';
-import { UserRoutes } from '../modules/user/user.route'
-import { orderRoutes } from '../modules/order/order.route';
-import   authRouter  from '../modules/auth/auth.router';
-import { MedicineRoutes } from '../modules/medicine.route';
+// import { UserRoutes } from '../modules/user/user.route'
+// import   authRouter  from '../modules/auth/auth.router';
+// import { MedicineRoutes } from '../modules/medicine.route';
+import { OrderRoutes } from '../modules/order/order.route';
 
 const router = Router();
 
 const moduleRoutes = [
-  {
-    path: '/users',
-    route: UserRoutes,
-  },
-  {
-    path: '/medicines',
-    route: MedicineRoutes,
-  },
+  // {
+  //   path: '/users',
+  //   route: UserRoutes,
+  // },
+  // {
+  //   path: '/medicines',
+  //   route: MedicineRoutes,
+  // },
   {
     path: '/orders',
-    route: orderRoutes,
+    route: OrderRoutes,
   },
   
-  {
-    path: '/auth',
-    route: authRouter,
-  },
+  // {
+  //   path: '/auth',
+  //   route: authRouter,
+  // },
   
   
 ];
