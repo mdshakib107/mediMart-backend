@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { UserRoutes } from '../modules/user/user.route'
 import { orderRoutes } from '../modules/order/order.route';
-import   authRouter  from '../modules/auth/auth.router';
 import { MedicineRoutes } from '../modules/medicine.route';
+import authRouter from '../modules/auth/auth.route';
 
 const router = Router();
 
