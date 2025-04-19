@@ -1,7 +1,7 @@
 import { TMedicine } from './medicine.interface';
 import { Medicine } from './medicine.model';
 import { medicineSearchableFields } from './medicine.constant';
-import QueryBuilder from '../builder/QueryBuilder';
+import QueryBuilder from 'src/app/builder/QueryBuilder';
 const createAMedicineIntoDB = async ( medicineData: TMedicine) => {
 
   const medicineExists = await Medicine.findOne({ _id: medicineData._id }); 
