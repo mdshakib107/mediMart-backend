@@ -5,8 +5,8 @@ import express, { NextFunction, Request, Response } from 'express';
 
 import { USER_ROLE } from '../user/user.constant';
 import medicineValidationSchema from './medicine.validation';
-import validateRequest from '../middlewares/validateRequest';
-import auth from '../middlewares/auth';
+import auth from 'src/app/middlewares/auth';
+import validateRequest from 'src/app/middlewares/validateRequest';
 //import { updateMedicineSchema  } from './updateProduct.validation';
 
 const router = express.Router();

@@ -4,8 +4,8 @@ import medicineValidationSchema from './medicine.validation';
 import { Medicine } from './medicine.model';
 import httpStatus from 'http-status';
 import updateMedicineSchema from './updateMedicine.validation';
-import catchAsync from '../utils/catchAsync';
-import { sendResponse } from '../utils/sendResponse';
+import catchAsync from 'src/app/utils/catchAsync';
+import { sendResponse } from 'src/app/utils/sendResponse';
 //import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 
 const createAMedicine = catchAsync(async (req, res) => {
