@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { MedicineServices } from './medicine.service';
 import medicineValidationSchema from './medicine.validation';
-import { Medicine } from './medicine.model';
+import { MedicineModel } from './medicine.model';
 import httpStatus from 'http-status';
 import updateMedicineSchema from './updateMedicine.validation';
 import catchAsync from 'src/app/utils/catchAsync';
@@ -27,7 +27,7 @@ const createAMedicine = catchAsync(async (req, res) => {
     expiryDate
   });
 
-  const newMedicine = new Medicine(validatedData);
+  const newMedicine = new MedicineModel(validatedData);
   const result = await newMedicine.save();
 
   sendResponse.sendCreateDataResponse(res, {

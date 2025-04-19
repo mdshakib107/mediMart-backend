@@ -5,7 +5,7 @@ import { Types } from 'mongoose';
 
   export interface TMedicine extends Document {
     name: string;
-    Img?: string;
+    Img?: string; 
     brand: string;
     price: number;
     symptoms: "Cough & Flu" | "Fever" | "Eye & Ear" | "Allergy" | "Skin & Hair" | "Diabetes" ;

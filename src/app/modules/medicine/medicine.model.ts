@@ -47,7 +47,7 @@ const medicineSchema = new Schema<TMedicine>(
     },
     inStock: { type: Boolean, default: true },
     expiryDate:{type:Date,required:true}
-  },
+  }, 
   {
     timestamps: true,
     versionKey: false,
@@ -59,8 +59,8 @@ medicineSchema.methods.isMedicineExists = async function (id: string) {
   return medicine !== null;
 };
 
-export const Medicine = model<TMedicine>('Medicine', medicineSchema);
+ const MedicineModel = model<TMedicine>('Medicine', medicineSchema);
 
-const MedicineModel = model('Medicine', medicineSchema);
+// const MedicineModel = model('Medicine', medicineSchema);
 
 export default MedicineModel;
