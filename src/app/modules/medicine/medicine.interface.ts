@@ -19,7 +19,7 @@ import { Types } from 'mongoose';
     expiryDate : Date
   }
 
-  export interface MedicineModel extends Model<TMedicine> {
+  export interface Medicine extends Model<TMedicine> {
     calculateTotalPrice(medicineId: Types.ObjectId, quantity: number): Promise<number>; 
     isUserExists(id: string): Promise<TMedicine | null>;  
   }

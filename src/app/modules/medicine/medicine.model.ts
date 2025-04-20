@@ -59,8 +59,7 @@ medicineSchema.methods.isMedicineExists = async function (id: string) {
   return medicine !== null;
 };
 
-export const Medicine = model<TMedicine>('Medicine', medicineSchema);
+const Medicine = model<TMedicine>('Medicine', medicineSchema);
 
-const MedicineModel = model('Medicine', medicineSchema);
 
-export default MedicineModel;
+export default Medicine;
