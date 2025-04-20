@@ -1,5 +1,5 @@
 import { Document, Schema, model } from 'mongoose';
-import { MedicineModel, TMedicine } from './medicine.interface';
+import { TMedicine } from './medicine.interface';
 
 export interface Product extends Document {
   name: string;
