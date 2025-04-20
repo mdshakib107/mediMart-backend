@@ -1,5 +1,5 @@
 import { Document, Schema, model } from 'mongoose';
-import { MedicineModel, TMedicine } from './medicine.interface';
+import { TMedicine } from './medicine.interface';
 
 export interface Product extends Document {
   name: string;
@@ -47,7 +47,7 @@ const medicineSchema = new Schema<TMedicine>(
     },
     inStock: { type: Boolean, default: true },
     expiryDate:{type:Date,required:true}
-  },
+  }, 
   {
     timestamps: true,
     versionKey: false,

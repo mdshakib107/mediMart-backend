@@ -39,7 +39,7 @@ const createAMedicine = catchAsync(async (req, res) => {
     expiryDate,
   });
 
-  const newMedicine = new Medicine(validatedData);
+  const newMedicine = new MedicineModel(validatedData);
   const result = await newMedicine.save();
 
   sendResponse.sendCreateDataResponse(res, {
