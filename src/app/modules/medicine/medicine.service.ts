@@ -35,10 +35,7 @@ const updateAMedicineFromDB = async (
 };
 
 const getAllMedicinesFromDB = async (query: Record<string, unknown>) => {
-  const medicineQuery = new QueryBuilder(
-    Medicine.find().populate('user'),
-    query
-  )
+  const medicineQuery = new QueryBuilder(Medicine.find(), query)
 
     .search(medicineSearchableFields)
     .filter()
@@ -46,7 +43,7 @@ const getAllMedicinesFromDB = async (query: Record<string, unknown>) => {
     .paginate()
     .fields();
   const meta = await medicineQuery.countTotal();
-  const result = await Medicine.find();
+  const result = await medicineQuery.modelQuery;
   return { meta, result };
 };
 
