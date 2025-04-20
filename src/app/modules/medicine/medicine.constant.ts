@@ -1,6 +1,6 @@
 export const medicineSearchableFields = [
     'brand',
     'name',
-    'symtoms',
+    'symptoms',
     'category',
   ];

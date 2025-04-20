@@ -34,6 +34,11 @@ const medicineSchema = new Schema<TMedicine>(
       enum: ["Cough & Flu" , "Fever" , "Eye & Ear" , "Allergy" , "Skin & Hair" , "Diabetes"],
       required: [true, 'Medicine type is required'],
     },
+    requiredPrescription: {
+      type: String,
+      enum: ["Yes" , "No"],
+      required: [true, 'Medicine type is required'],
+    },
     description: { type: String, required: [true, 'Description is required'] },
     manufacturerDetails:{ type: String, required: [true, 'Manufacturer Details is required']},
     genericName:{ type: String, required: [true, 'Generic Name  is required']},
