@@ -1,14 +1,14 @@
 import QueryBuilder from '../../builder/QueryBuilder';
 import { medicineSearchableFields } from './medicine.constant';
 import { TMedicine } from './medicine.interface';
-import MedicineModel from './medicine.model';
+import Medicine from './medicine.model';
 const createAMedicineIntoDB = async (medicineData: TMedicine) => {
-  const medicineExists = await MedicineModel.findOne({ _id: medicineData._id });
+  const medicineExists = await Medicine.findOne({ _id: medicineData._id });
   if (medicineExists) {
     throw new Error('Medicine with this ID already exists!');
   }
 
-  const result = await MedicineModel.create(medicineData);
+  const result = await Medicine.create(medicineData);
   return result;
 };
 
@@ -16,8 +16,7 @@ const updateAMedicineFromDB = async (
   id: string,
   updatedMedicineData: Partial<{ price: number; quantity: number }>
 ) => {
-
-  const medicine = await MedicineModel.findById(id);
+  const medicine = await Medicine.findById(id);
   if (!medicine) {
     throw new Error('Medicine not found');
   }
@@ -36,7 +35,7 @@ const updateAMedicineFromDB = async (
 };
 
 const getAllMedicinesFromDB = async (query: Record<string, unknown>) => {
-  const medicineQuery = new QueryBuilder(MedicineModel.find(), query)
+  const medicineQuery = new QueryBuilder(Medicine.find(), query)
 
     .search(medicineSearchableFields)
     .filter()
@@ -49,7 +48,7 @@ const getAllMedicinesFromDB = async (query: Record<string, unknown>) => {
 };
 
 const getASpecificMedicineFromDB = async (id: string) => {
-  const result = await MedicineModel.findById(id);
+  const result = await Medicine.findById(id);
   if (!result) {
     throw new Error('Medicine not found!');
   }
@@ -57,7 +56,7 @@ const getASpecificMedicineFromDB = async (id: string) => {
 };
 
 const deleteAMedicineFromDB = async (id: string) => {
-  const result = await MedicineModel.findByIdAndDelete(id);
+  const result = await Medicine.findByIdAndDelete(id);
 
   if (!result) {
     throw new Error('Medicine not found!');
@@ -69,7 +68,7 @@ const updateMedicineInventory = async (
   medicineId: string,
   quantity: number
 ) => {
-  const medicine = await MedicineModel.findById(medicineId);
+  const medicine = await Medicine.findById(medicineId);
   if (!medicine) {
     throw new Error('Medicine not found');
   }
