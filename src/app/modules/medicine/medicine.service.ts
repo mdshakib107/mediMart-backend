@@ -8,7 +8,7 @@ const createAMedicineIntoDB = async (medicineData: TMedicine) => {
     throw new Error('Medicine with this ID already exists!');
   }
 
-  const result = await Medicine.create(medicineData);
+  const result = await MedicineModel.create(medicineData);
   return result;
 };
 
@@ -17,7 +17,7 @@ const updateAMedicineFromDB = async (
   updatedMedicineData: Partial<{ price: number; quantity: number }>
 ) => {
 
-  const medicine = await Medicine.findById(id);
+  const medicine = await MedicineModel.findById(id);
   if (!medicine) {
     throw new Error('Medicine not found');
   }
