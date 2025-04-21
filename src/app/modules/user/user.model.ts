@@ -5,22 +5,25 @@ import config from '../../config';
 import { UserStatus } from './user.constant';
 import { TUser, UserModel } from './user.interface';
 
-export const userSchema = new Schema<TUser,UserModel>(
+export const userSchema = new Schema<TUser, UserModel>(
   {
     name: {
-        type: String,
-        required: [true,'Please provide your name'],
-        unique: true,
-        minlength:3,
-        maxlength: 50,
-      },
+      type: String,
+      trim: true,
+      required: [true, 'Please provide your name'],
+      unique: true,
+      minlength: 3,
+      maxlength: 50,
+    },
     email: {
       type: String,
+      trim: true,
       required: true,
       unique: true,
     },
     password: {
       type: String,
+      trim: true,
       required: true,
       select: 0,
     },
@@ -33,28 +36,31 @@ export const userSchema = new Schema<TUser,UserModel>(
     },
     role: {
       type: String,
-      enum: [ 'customer', 'admin'],
-      default:'customer',
-      required:true,
+      enum: ['customer', 'admin'],
+      default: 'customer',
+      required: true,
     },
     status: {
       type: String,
       enum: UserStatus,
       default: 'active',
     },
+    image: {
+      type: String,
+    },
   },
   {
     timestamps: true,
     versionKey: false,
-  },
+  }
 );
 userSchema.pre('save', async function (next) {
-  const user = this; 
-  
+  const user = this;
+
   // hashing password and save into DB
- user.password = await bcrypt.hash(
+  user.password = await bcrypt.hash(
     user.password,
-    Number(config.bcrypt_salt_rounds),
+    Number(config.bcrypt_salt_rounds)
   );
 
   next();
@@ -66,22 +72,20 @@ userSchema.post('save', function (doc, next) {
   next();
 });
 
-
-
 userSchema.statics.isUserExistsByCustomId = async function (id: string) {
   return await User.findOne({ id }).select('+password');
 };
 
 userSchema.statics.isPasswordMatched = async function (
   plainTextPassword,
-  hashedPassword,
+  hashedPassword
 ) {
   return await bcrypt.compare(plainTextPassword, hashedPassword);
 };
 
 userSchema.statics.isJWTIssuedBeforePasswordChanged = function (
   passwordChangedTimestamp: Date,
-  jwtIssuedTimestamp: number,
+  jwtIssuedTimestamp: number
 ) {
   const passwordChangedTime =
     new Date(passwordChangedTimestamp).getTime() / 1000;
@@ -94,4 +98,4 @@ userSchema.methods.comparePassword = async function (enteredPassword: string) {
   }
   return await bcrypt.compare(enteredPassword, this.password);
 };
-export const User =  model<TUser,UserModel>('User', userSchema);
+export const User = model<TUser, UserModel>('User', userSchema);

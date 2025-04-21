@@ -15,6 +15,7 @@ const sendDataResponse = <T>(res: Response, data: TResponse<T>) => {
     success: data.success,
     message: data.message,
     statusCode: httpStatus.OK,
+    token:data.token,
     data: data.data,
   });
 };

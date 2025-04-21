@@ -15,8 +15,15 @@ const checkIfUserExists = async (email: string) => {
 
 const createAdmin = async (payload: TUser): Promise<TUser> => {
   await checkIfUserExists(payload.email);
-  console.log('payload', payload);
+  // console.log('payload', payload);
   payload.role = 'admin';
+  const result = await User.create(payload);
+
+  return result;
+};
+
+const createUser = async (payload: TUser): Promise<TUser> => {
+  await checkIfUserExists(payload.email);
   const result = await User.create(payload);
 
   return result;
@@ -50,4 +57,5 @@ export const UserServices = {
   getSingleUser,
   updateUser,
   deleteUser,
+  createUser,
 };
