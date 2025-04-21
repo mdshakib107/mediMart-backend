@@ -34,6 +34,7 @@ const login = catchAsync(async (req: Request, res: Response) => {
     message: 'User login successful',
     statusCode: HttpStatus.CREATED,
     token: result.token! || token!,
+    refreshToken: result.refreshToken! || refreshToken!,
     data: result.user,
   });
 });
