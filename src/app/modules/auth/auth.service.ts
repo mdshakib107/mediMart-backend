@@ -25,8 +25,8 @@ const login = async (payload: ILoginUser) => {
   }
 
   const userStatus = user?.status;
-  if (userStatus === 'deactivate') {
-    throw new Error('User is blocked');
+  if (userStatus === 'inactive') {
+    throw new Error('User is inactive');
   }
 
   const userPassword = user?.password;
@@ -81,8 +81,8 @@ const refreshToken = async (refreshToken: string) => {
     throw new Error('User not found');
   }
 
-  if (user?.status === 'deactivate') {
-    throw new Error('User is blocked');
+  if (user?.status === 'inactive') {
+    throw new Error('User is inactive');
   }
 
   const token = createToken(
@@ -114,7 +114,7 @@ const changePassword = async (
 
   const userStatus = user?.status;
 
-  if (userStatus === 'deactivate') {
+  if (userStatus === 'inactive') {
     throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked!');
   }
 
