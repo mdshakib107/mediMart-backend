@@ -1,10 +1,10 @@
 import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 import { sendResponse } from '../../utils/sendResponse';
+import Medicine from './medicine.model';
 import { MedicineServices } from './medicine.service';
 import medicineValidationSchema from './medicine.validation';
 import updateMedicineSchema from './updateMedicine.validation';
-import Medicine from './medicine.model';
 //import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 
 const createAMedicine = catchAsync(async (req, res) => {
@@ -61,6 +61,15 @@ const getAllMedicines = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const getAllMedicinesNoPage = catchAsync(async (req, res) => {
+  const result = await MedicineServices.getAllMedicines(req.query);
+  sendResponse.sendDataResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Medicine retrieved successfully No Page',
+    data: result,
+  });
+});
 
 const getASpecificMedicine = catchAsync(async (req, res) => {
   const { id } = req.params;
@@ -108,6 +117,7 @@ const deleteAMedicine = catchAsync(async (req, res) => {
 export const MedicineControllers = {
   createAMedicine,
   getAllMedicines,
+  getAllMedicinesNoPage,
   getASpecificMedicine,
   updateAMedicine,
   deleteAMedicine,
