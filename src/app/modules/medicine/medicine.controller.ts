@@ -61,15 +61,6 @@ const getAllMedicines = catchAsync(async (req, res) => {
     data: result,
   });
 });
-const getAllMedicinesNoPage = catchAsync(async (req, res) => {
-  const result = await MedicineServices.getAllMedicines(req.query);
-  sendResponse.sendDataResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Medicine retrieved successfully No Page',
-    data: result,
-  });
-});
 
 const getASpecificMedicine = catchAsync(async (req, res) => {
   const { id } = req.params;
@@ -117,7 +108,6 @@ const deleteAMedicine = catchAsync(async (req, res) => {
 export const MedicineControllers = {
   createAMedicine,
   getAllMedicines,
-  getAllMedicinesNoPage,
   getASpecificMedicine,
   updateAMedicine,
   deleteAMedicine,

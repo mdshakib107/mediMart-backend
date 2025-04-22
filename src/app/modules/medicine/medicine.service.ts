@@ -33,12 +33,6 @@ const updateAMedicineFromDB = async (
   return medicine;
 };
 
-const getAllMedicines = async (query: Record<string, any>) => {
-  const medicineQuery = new QueryBuilder(Medicine.find(), query).fields();
-  const meta = await medicineQuery.countTotal();
-  const result = await medicineQuery.modelQuery;
-  return { meta, result };
-};
 const getAllMedicinesFromDB = async (query: Record<string, any>) => {
   const medicineQuery = new QueryBuilder(Medicine.find(), query)
     .search(['name', 'dosCategory', 'symptoms']) // Make fields searchable
@@ -96,7 +90,6 @@ export const MedicineServices = {
   createAMedicineIntoDB,
   updateAMedicineFromDB,
   getAllMedicinesFromDB,
-  getAllMedicines,
   getASpecificMedicineFromDB,
   deleteAMedicineFromDB,
   updateMedicineInventory,

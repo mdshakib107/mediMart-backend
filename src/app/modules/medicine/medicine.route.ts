@@ -22,11 +22,6 @@ router.get(
   //auth( USER_ROLE.admin,USER_ROLE.customer),
   MedicineControllers.getAllMedicines
 );
-router.get(
-  '/all',
-  //auth( USER_ROLE.admin,USER_ROLE.customer),
-  MedicineControllers.getAllMedicinesNoPage
-);
 
 router.get('/:id', MedicineControllers.getASpecificMedicine);
 
