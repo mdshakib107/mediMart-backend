@@ -13,10 +13,13 @@ const app: Application = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: [
-    'http://localhost:5173',
-    '*'
-], credentials: true })); 
+app.use(
+  cors({
+    origin:
+      process.env.NODE_ENV === 'production' ? ['http://localhost:5173'] : '*',
+    credentials: true,
+  })
+);
 
 app.use('/api', router);
 
@@ -38,15 +41,14 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use(globalErrorHandler);
 
-
 // route not found
 app.use('*', (req: Request, res: Response) => {
-    res.status(HttpStatus.FORBIDDEN).send({
-      success: false,
-      message: 'Route not found!',
-      status: HttpStatus.FORBIDDEN,
-    });
+  res.status(HttpStatus.FORBIDDEN).send({
+    success: false,
+    message: 'Route not found!',
+    status: HttpStatus.FORBIDDEN,
   });
+});
 
 app.use(notFound as any);
 
