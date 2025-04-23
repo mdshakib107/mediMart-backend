@@ -2,7 +2,7 @@
 import express from 'express';
 import { MedicineControllers } from './medicine.controller';
 
-import validateRequest from 'src/app/middlewares/validateRequest';
+import validateRequest from '../../middlewares/validateRequest';
 import auth from '../../middlewares/auth';
 import { USER_ROLE } from '../user/user.constant';
 import medicineValidationSchema from './medicine.validation';
