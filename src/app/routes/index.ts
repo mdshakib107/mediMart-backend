@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import authRouter from '../modules/auth/auth.route';
 import { MedicineRoutes } from '../modules/medicine/medicine.route';
-import { UserRoutes } from '../modules/user/user.route';
 import { OrderRoutes } from '../modules/order/order.route';
+import { UserRoutes } from '../modules/user/user.route';
 
 const router = Router();
 
@@ -26,6 +26,9 @@ const moduleRoutes = [
   },
 ];
 
-moduleRoutes.forEach((route) => router.use(route.path, route.route));
+moduleRoutes.forEach((route) => {
+  // console.log('📦 Registering route:', route.path);
+  router.use(route.path, route.route);
+});
 
 export default router;

@@ -1,4 +1,5 @@
 import QueryBuilder from '../../builder/QueryBuilder';
+import { medicineSearchableFields } from './medicine.constant';
 import { TMedicine } from './medicine.interface';
 import Medicine from './medicine.model';
 const createAMedicineIntoDB = async (medicineData: TMedicine) => {
@@ -35,7 +36,7 @@ const updateAMedicineFromDB = async (
 
 const getAllMedicinesFromDB = async (query: Record<string, any>) => {
   const medicineQuery = new QueryBuilder(Medicine.find(), query)
-    .search(['name', 'dosCategory', 'symptoms']) // Make fields searchable
+    .search(medicineSearchableFields) // Make fields searchable
     .filter()
     .sort()
     .paginate()
