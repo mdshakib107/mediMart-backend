@@ -1,10 +1,10 @@
 import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 import { sendResponse } from '../../utils/sendResponse';
+import Medicine from './medicine.model';
 import { MedicineServices } from './medicine.service';
 import medicineValidationSchema from './medicine.validation';
 import updateMedicineSchema from './updateMedicine.validation';
-import Medicine from './medicine.model';
 //import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 
 const createAMedicine = catchAsync(async (req, res) => {
