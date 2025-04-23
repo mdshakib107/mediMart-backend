@@ -42,13 +42,13 @@ app.get('/', (req: Request, res: Response) => {
 app.use(globalErrorHandler);
 
 // route not found
-app.use('*', (req: Request, res: Response) => {
-  res.status(HttpStatus.FORBIDDEN).send({
-    success: false,
-    message: 'Route not found!',
-    status: HttpStatus.FORBIDDEN,
-  });
-});
+// app.use('*', (req: Request, res: Response) => {
+//   res.status(HttpStatus.FORBIDDEN).send({
+//     success: false,
+//     message: 'Route not found!',
+//     status: HttpStatus.FORBIDDEN,
+//   });
+// });
 
 app.use(notFound as any);
 
