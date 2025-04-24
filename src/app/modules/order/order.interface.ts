@@ -18,6 +18,8 @@ export type TOrder = {
     paymentStatus: TPaymentStatus
     transactionId?: string; 
     isDeleted?: boolean;
+    city?: string;
+    shippingAddress?: string;
     createdAt?: Date;
     updatedAt?: Date;
 }
