@@ -33,7 +33,9 @@ const orderSchema = new Schema<TOrder>({
         default: 'UNPAID'
     },
     transactionId: String,
-    isDeleted: { type: Boolean, default: false },
+    isDeleted: { type: Boolean, default: false },    
+    city: String,
+    shippingAddress: String,
 },
     {
         timestamps: true
