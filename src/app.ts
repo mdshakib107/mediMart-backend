@@ -14,8 +14,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: '*',
-      // process.env.NODE_ENV === 'production' ? ['http://localhost:3000','*'] : '*',
+    origin: ['http://localhost:3000'],
     credentials: true,
   })
 );
