@@ -6,18 +6,18 @@ import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 import { sendResponse } from '../../utils/sendResponse';
 import { OrderService } from './order.service';
 
-// const createOrder = catchAsync(async (req, res) => {
-// // console.log(req.body);
-//   const result = await OrderService.createOrderIntoDB(req.body);
+const createOrder = catchAsync(async (req, res) => {
+// console.log(req.body);
+  const result = await OrderService.createOrderIntoDB(req.body);
 
-//   // console.log({result});
-//   sendResponse.sendCreateDataResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'Order is created succesfully',
-//     data: result,
-//   });
-// });
+  // console.log({result});
+  sendResponse.sendCreateDataResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Order is created succesfully',
+    data: result,
+  });
+});
 
 const successOrder = catchAsync(async (req, res) => {
   const { transactionId } = req.params;
@@ -127,7 +127,7 @@ const prescriptionUpload = catchAsync(async (req, res) => {
 });
 
 export const OrderControllers = {
-  //   createOrder,
+  createOrder,
   getAllOrder,
   updateSingleOrder,
   deleteSingleOrder,
