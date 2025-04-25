@@ -1,8 +1,6 @@
 import express from 'express';
-
 import { upload } from '../../utils/sendImageToCloudinary';
 import validateRequest from '../../middlewares/validateRequest';
-
 import { OrderControllers } from './order.controller';
 import { OrderValidation } from './order.validation';
 
