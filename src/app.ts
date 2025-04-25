@@ -9,32 +9,32 @@ import notFound from './app/middlewares/notFound';
 import router from './app/routes';
 
 const app: Application = express();
-app.use(express.json());
-app.use(cookieParser());
-app.use(express.urlencoded({ extended: true }));
-// app.use(
-//   cors({
-//     origin: ['http://localhost:3000'],
-//     credentials: true,
-//   })
-// );
-const allowedOrigins = [
-  'http://localhost:3000',
-  //'https://your-frontend-deployed-url.vercel.app', // if deployed
-];
-
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
+    origin: ['http://localhost:3000'],
     credentials: true,
   })
 );
+app.use(express.json());
+app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
+// const allowedOrigins = [
+//   'http://localhost:3000',
+//   //'https://your-frontend-deployed-url.vercel.app', // if deployed
+// ];
+
+// app.use(
+//   cors({
+//     origin: function (origin, callback) {
+//       if (!origin || allowedOrigins.includes(origin)) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error('Not allowed by CORS'));
+//       }
+//     },
+//     credentials: true,
+//   })
+// );
 
 app.use('/api', router);
 
