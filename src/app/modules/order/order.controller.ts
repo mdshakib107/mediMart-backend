@@ -4,7 +4,7 @@ import { sendResponse } from '../../utils/sendResponse';
 import { OrderService } from './order.service';
 import AppError from '../../errors/AppErrors';
 import config from '../../config/index';
-import { sendImageToCloudinary } from 'src/app/utils/sendImageToCloudinary';
+import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 
 // const createOrder = catchAsync(async (req, res) => { 
 // // console.log(req.body);
@@ -88,8 +88,11 @@ const prescriptionUpload = catchAsync(async (req, res) => {
     // Upload to Cloudinary
     const result = await sendImageToCloudinary(imageName, filePath);
 
+    // Type assertion for result
+    const { secure_url } = result as { secure_url: string };
+
     // Get the URL of the uploaded image
-    const prescriptionUrl = result.secure_url; // Cloudinary provides a secure URL to the uploaded image
+    const prescriptionUrl = secure_url; // Cloudinary provides a secure URL to the uploaded image
 
     // Now, associate the uploaded prescription with the order
     const { orderId } = req.body; // Assuming the order ID is sent in the body of the request
