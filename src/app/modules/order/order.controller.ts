@@ -80,12 +80,15 @@ const prescriptionUpload = catchAsync(async (req, res) => {
 
   // File info
   const file = req.file;
-  const filePath = file.path; // path where the file is stored locally
+  // const filePath = file.path; // path where the file is stored locally
   const imageName = `prescription-${Date.now()}`; // Unique name for the uploaded file
 
   try {
     // Upload to Cloudinary
-    const result = await sendImageToCloudinary(imageName, filePath);
+    // const result = await sendImageToCloudinary(imageName, filePath);
+
+    // Upload to Cloudinary directly from memory (file.buffer)
+    const result = await sendImageToCloudinary(imageName, file.buffer);
 
     // Type assertion for result
     const { secure_url } = result as { secure_url: string };

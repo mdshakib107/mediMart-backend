@@ -188,10 +188,16 @@ const updateOrderPrescription = async (
   prescriptionUrl: string
 ) => {
   try {
+    //* Ensure orderId is valid ObjectId
+    if (!Types.ObjectId.isValid(orderId)) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Invalid order ID');
+    }
+
+    //* Update the prescription URL in the order
     const order = await Order.findByIdAndUpdate(
       orderId,
-      { prescriptionUrl }, // Update the prescriptionUrl
-      { new: true } // Return the updated order
+      { prescriptionUrl }, //? Update the prescriptionUrl
+      { new: true } //? Return the updated order
     );
 
     if (!order) {
