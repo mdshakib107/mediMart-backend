@@ -5,9 +5,6 @@ import catchAsync from '../../utils/catchAsync';
 import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 import { sendResponse } from '../../utils/sendResponse';
 import { OrderService } from './order.service';
-import AppError from '../../errors/AppErrors';
-import config from '../../config/index';
-import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 
 // const createOrder = catchAsync(async (req, res) => {
 // // console.log(req.body);
