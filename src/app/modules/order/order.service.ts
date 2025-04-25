@@ -1,18 +1,12 @@
-import { UserServices } from '../user/user.service';
+import httpStatus from 'http-status';
+import { Types } from 'mongoose';
+import AppError from '../../errors/AppErrors';
 import { TOrder } from './order.interface';
 import { Order } from './order.model';
-import SSLCommerzPayment from 'sslcommerz-lts';
-import { v4 as uuidv4 } from 'uuid';
-import AppError from '../../errors/AppErrors';
-import httpStatus from 'http-status'
-import mongoose, { Types } from 'mongoose';
-import config from '../../config';  
-
 
 // const createOrderIntoDB = async (payload: TOrder) => {
 //     // console.log(payload);
 //     const session = await mongoose.startSession();
-
 
 //     try {
 //         session.startTransaction();
@@ -102,95 +96,97 @@ import config from '../../config';
 // };
 
 const successOrderIntoDB = async (transactionId: string) => {
-    // Find the order with the given transactionId
-    const order = await Order.findOne({ transactionId });
+  // Find the order with the given transactionId
+  const order = await Order.findOne({ transactionId });
 
-    if (!order) {
-        throw new AppError(httpStatus.NOT_FOUND, 'No order found with this transaction ID');
-    }
+  if (!order) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'No order found with this transaction ID'
+    );
+  }
 
-    // Update the order status to processing and payment status to paid
-    const updatedRwsult = await Order.updateOne(
-        { transactionId },
-        {
-            status: 'PROCESSING',
-            paymentStatus: 'PAID'
-        },
-        { new: true }
-    )
+  // Update the order status to processing and payment status to paid
+  const updatedRwsult = await Order.updateOne(
+    { transactionId },
+    {
+      status: 'PROCESSING',
+      paymentStatus: 'PAID',
+    },
+    { new: true }
+  );
 
-    if (updatedRwsult.modifiedCount === 0) {
-        throw new AppError(httpStatus.BAD_REQUEST, 'Order was not updated');
-    }
+  if (updatedRwsult.modifiedCount === 0) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Order was not updated');
+  }
 
-
-    return updatedRwsult;
-}
+  return updatedRwsult;
+};
 
 const failOrderIntoDB = async (transactionId: string) => {
-    // delete the order with the given transactionId
-    const deleteOrder = await Order.deleteOne({ transactionId });
+  // delete the order with the given transactionId
+  const deleteOrder = await Order.deleteOne({ transactionId });
 
+  if (deleteOrder.deletedCount === 0) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete order');
+  }
 
-    if (deleteOrder.deletedCount === 0) {
-        throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete order');
-    }
-
-
-    return deleteOrder;
-}
-
-
-
+  return deleteOrder;
+};
 
 const getAllOrdersFromDB = async (query: Record<string, unknown>) => {
-    let page = Number(query.page) || 1; // Default to page 1 if not provided
-    let limit = Number(query.limit) || 10; // Default to 10 items per page if not provided
-    const skip = (page - 1) * limit;
-    const userId = query.id as string
+  let page = Number(query.page) || 1; // Default to page 1 if not provided
+  let limit = Number(query.limit) || 10; // Default to 10 items per page if not provided
+  const skip = (page - 1) * limit;
+  const userId = query.id as string;
 
-    // filter object
-    const filter: Record<string, unknown> = {
-        isDeleted: { $ne: true }
-    };
-    if (userId) {
-        filter.user = userId
-    }
-    // console.log(filter);
-    // exclude the deleted orders
+  // filter object
+  const filter: Record<string, unknown> = {
+    isDeleted: { $ne: true },
+  };
+  if (userId) {
+    filter.user = userId;
+  }
+  // console.log(filter);
+  // exclude the deleted orders
 
+  const result = await Order.find(filter)
+    .populate('user')
+    .populate('products.product')
+    .skip(skip)
+    .limit(limit);
 
-
-    const result = await Order.find(filter)
-        .populate('user')
-        .populate('products.product')
-        .skip(skip)
-        .limit(limit);
-
-    const totalOrders = await Order.countDocuments(filter);
-    return {
-        data: result,
-        totalOrders,
-        totalPages: Math.ceil(totalOrders / limit),
-        currentPage: page,
-    };
+  const totalOrders = await Order.countDocuments(filter);
+  return {
+    data: result,
+    totalOrders,
+    totalPages: Math.ceil(totalOrders / limit),
+    currentPage: page,
+  };
 };
 
 const updateOrderIntoDB = async (id: string, payload: Partial<TOrder>) => {
-    const shippingStatus = payload.shippingStatus;
-    const result = await Order.findByIdAndUpdate(id, { shippingStatus }, { new: true });
-    return result;
+  const shippingStatus = payload.shippingStatus;
+  const result = await Order.findByIdAndUpdate(
+    id,
+    { shippingStatus },
+    { new: true }
+  );
+  return result;
 };
 const deleteOrderFromDB = async (id: string) => {
-    const result = await Order.findByIdAndUpdate(
-        id,
-        { isDeleted: true },
-        { new: true },
-    );
-    return result;
+  const result = await Order.findByIdAndUpdate(
+    id,
+    { isDeleted: true },
+    { new: true }
+  );
+  return result;
 };
 
-const updateOrderPrescription = async (orderId: Types.ObjectId, prescriptionUrl: string) => {
+const updateOrderPrescription = async (
+  orderId: Types.ObjectId,
+  prescriptionUrl: string
+) => {
   try {
     const order = await Order.findByIdAndUpdate(
       orderId,
@@ -205,16 +201,19 @@ const updateOrderPrescription = async (orderId: Types.ObjectId, prescriptionUrl:
     return order;
   } catch (error) {
     console.error(error);
-    throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, 'Failed to update order');
+    throw new AppError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      'Failed to update order'
+    );
   }
 };
 
 export const OrderService = {
-    getAllOrdersFromDB,
-    // createOrderIntoDB,
-    updateOrderIntoDB,
-    deleteOrderFromDB,
-    successOrderIntoDB,
-    failOrderIntoDB,
-    updateOrderPrescription,
+  getAllOrdersFromDB,
+  // createOrderIntoDB,
+  updateOrderIntoDB,
+  deleteOrderFromDB,
+  successOrderIntoDB,
+  failOrderIntoDB,
+  updateOrderPrescription,
 };
