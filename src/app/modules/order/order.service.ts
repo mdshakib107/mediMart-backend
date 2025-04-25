@@ -5,7 +5,7 @@ import SSLCommerzPayment from 'sslcommerz-lts';
 import { v4 as uuidv4 } from 'uuid';
 import AppError from '../../errors/AppErrors';
 import httpStatus from 'http-status'
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import config from '../../config';  
 
 
@@ -190,6 +190,25 @@ const deleteOrderFromDB = async (id: string) => {
     return result;
 };
 
+const updateOrderPrescription = async (orderId: Types.ObjectId, prescriptionUrl: string) => {
+  try {
+    const order = await Order.findByIdAndUpdate(
+      orderId,
+      { prescriptionUrl }, // Update the prescriptionUrl
+      { new: true } // Return the updated order
+    );
+
+    if (!order) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Order not found');
+    }
+
+    return order;
+  } catch (error) {
+    console.error(error);
+    throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, 'Failed to update order');
+  }
+};
+
 export const OrderService = {
     getAllOrdersFromDB,
     // createOrderIntoDB,
@@ -197,4 +216,5 @@ export const OrderService = {
     deleteOrderFromDB,
     successOrderIntoDB,
     failOrderIntoDB,
+    updateOrderPrescription,
 };
