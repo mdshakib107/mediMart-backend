@@ -1,11 +1,12 @@
 import httpStatus from 'http-status';
+import config from '../../config/index';
+import AppError from '../../errors/AppErrors';
 import catchAsync from '../../utils/catchAsync';
+import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 import { sendResponse } from '../../utils/sendResponse';
 import { OrderService } from './order.service';
-import AppError from '../../errors/AppErrors';
-import config from '../../config/index';
 
-// const createOrder = catchAsync(async (req, res) => { 
+// const createOrder = catchAsync(async (req, res) => {
 // // console.log(req.body);
 //   const result = await OrderService.createOrderIntoDB(req.body);
 
@@ -14,30 +15,29 @@ import config from '../../config/index';
 //     statusCode: httpStatus.OK,
 //     success: true,
 //     message: 'Order is created succesfully',
-//     data: result, 
+//     data: result,
 //   });
 // });
 
-const successOrder = catchAsync(async (req, res)=> {
+const successOrder = catchAsync(async (req, res) => {
   const { transactionId } = req.params;
-  const result = await OrderService.successOrderIntoDB(transactionId)
+  const result = await OrderService.successOrderIntoDB(transactionId);
 
-  
-  if( result.modifiedCount === 0 ){
+  if (result.modifiedCount === 0) {
     throw new AppError(httpStatus.BAD_REQUEST, 'Order was not updated');
   }
-return res.redirect(`${config.frontendBaseUrl}/successfull-order`)
-})
+  return res.redirect(`${config.frontendBaseUrl}/successfull-order`);
+});
 // fail order
-const failOrder = catchAsync(async (req, res)=> {
+const failOrder = catchAsync(async (req, res) => {
   const { transactionId } = req.params;
-  const result = await OrderService.failOrderIntoDB(transactionId)
-  
+  const result = await OrderService.failOrderIntoDB(transactionId);
+
   if (result.deletedCount === 0) {
     throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete order');
   }
-  return res.redirect(`${config.frontendBaseUrl}/failed-order`)
-})
+  return res.redirect(`${config.frontendBaseUrl}/failed-order`);
+});
 
 const getAllOrder = catchAsync(async (req, res) => {
   const result = await OrderService.getAllOrdersFromDB(req.query);
@@ -58,7 +58,7 @@ const updateSingleOrder = catchAsync(async (req, res) => {
     success: true,
     message: 'Order Updated succesfully',
     data: result,
-  }); 
+  });
 });
 
 const deleteSingleOrder = catchAsync(async (req, res) => {
@@ -72,11 +72,60 @@ const deleteSingleOrder = catchAsync(async (req, res) => {
   });
 });
 
+const prescriptionUpload = catchAsync(async (req, res) => {
+  // Check if the file is uploaded
+  if (!req.file) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'No file uploaded.');
+  }
+
+  // File info
+  const file = req.file;
+  const filePath = file.path; // path where the file is stored locally
+  const imageName = `prescription-${Date.now()}`; // Unique name for the uploaded file
+
+  try {
+    // Upload to Cloudinary
+    const result = await sendImageToCloudinary(imageName, filePath);
+
+    // Get the URL of the uploaded image
+    const prescriptionUrl = result.secure_url; // Cloudinary provides a secure URL to the uploaded image
+
+    // Now, associate the uploaded prescription with the order
+    const { orderId } = req.body; // Assuming the order ID is sent in the body of the request
+
+    const order = await OrderService.updateOrderPrescription(
+      orderId,
+      prescriptionUrl
+    );
+    if (!order) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Order not found or update failed.'
+      );
+    }
+
+    // Send success response
+    sendResponse.sendCreateDataResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Prescription uploaded successfully!',
+      data: { prescriptionUrl },
+    });
+  } catch (error) {
+    console.error(error);
+    throw new AppError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      'Failed to upload prescription.'
+    );
+  }
+});
+
 export const OrderControllers = {
-//   createOrder,
+  //   createOrder,
   getAllOrder,
   updateSingleOrder,
   deleteSingleOrder,
   successOrder,
   failOrder,
-}; 
+  prescriptionUpload,
+};

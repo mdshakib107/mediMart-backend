@@ -33,6 +33,7 @@ const orderSchema = new Schema<TOrder>({
         default: 'UNPAID'
     },
     transactionId: String,
+    prescriptionUrl:String,
     isDeleted: { type: Boolean, default: false },    
     city: String,
     shippingAddress: String,

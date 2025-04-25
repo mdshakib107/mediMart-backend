@@ -20,6 +20,7 @@ export type TOrder = {
     isDeleted?: boolean;
     city?: string;
     shippingAddress?: string;
+    prescriptionUrl?: string;
     createdAt?: Date;
     updatedAt?: Date;
 }

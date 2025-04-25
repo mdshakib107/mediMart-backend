@@ -1,4 +1,5 @@
 import httpStatus from 'http-status';
+import { Types } from 'mongoose';
 import AppError from '../../errors/AppErrors';
 import { TOrder } from './order.interface';
 import { Order } from './order.model';
@@ -182,6 +183,31 @@ const deleteOrderFromDB = async (id: string) => {
   return result;
 };
 
+const updateOrderPrescription = async (
+  orderId: Types.ObjectId,
+  prescriptionUrl: string
+) => {
+  try {
+    const order = await Order.findByIdAndUpdate(
+      orderId,
+      { prescriptionUrl }, // Update the prescriptionUrl
+      { new: true } // Return the updated order
+    );
+
+    if (!order) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Order not found');
+    }
+
+    return order;
+  } catch (error) {
+    console.error(error);
+    throw new AppError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      'Failed to update order'
+    );
+  }
+};
+
 export const OrderService = {
   getAllOrdersFromDB,
   // createOrderIntoDB,
@@ -189,4 +215,5 @@ export const OrderService = {
   deleteOrderFromDB,
   successOrderIntoDB,
   failOrderIntoDB,
+  updateOrderPrescription,
 };
