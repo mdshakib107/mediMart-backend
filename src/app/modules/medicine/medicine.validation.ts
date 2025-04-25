@@ -7,9 +7,9 @@ const medicineValidationSchema = z.object({
   symptoms: z.enum(["Cough & Flu" , "Fever" , "Eye & Ear" , "Allergy" , "Skin & Hair" , "Diabetes" ]),
   description: z.string().min(1, "Description is required"),
   manufacturerDetails: z.string().min(1, "Description is required"),
-  genericName: z.string().min(1, "Description is required"),
-  strength: z.string().min(1, "Description is required"),
-  dosCategory: z.string().min(1, "Description is required"),
+  genericName: z.string().min(1, "Generic name is required"),
+  strength: z.string().min(1, "strength is required"),
+  dosCategory: z.string().min(1, "dosCategory is required"),
 
   quantity: z.number().min(1, "Quantity must be at least 1"),
   inStock: z.boolean(),
