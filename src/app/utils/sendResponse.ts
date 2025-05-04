@@ -7,7 +7,8 @@ type TResponse<T> = {
   statusCode: number;
   success: boolean;
   message: string;
-  token?:string
+  token?:string;
+  refreshToken?:string;
   data: T | T[] | null
 };
 const sendDataResponse = <T>(res: Response, data: TResponse<T>) => {
@@ -15,6 +16,8 @@ const sendDataResponse = <T>(res: Response, data: TResponse<T>) => {
     success: data.success,
     message: data.message,
     statusCode: httpStatus.OK,
+    token: data.token,
+    refreshToken: data.refreshToken,
     data: data.data,
   });
 };
@@ -23,7 +26,8 @@ const sendCreateDataResponse = <T>(res: Response, data: TResponse<T>) => {
     success: data.success,
     message: data.message,
     statusCode: httpStatus.CREATED,
-    token:data.token,
+    token: data.token,
+    refreshToken: data.refreshToken,
     data: data.data,
   });
 };
