@@ -27,6 +27,7 @@
     "express": "^5.1.0",
     "http-status": "^1.7.3",
     "jsonwebtoken": "^9.0.2",
+    "module-alias": "^2.2.3",
     "mongoose": "^8.13.2",
     "multer": "^1.4.5-lts.2",
     "nodemailer": "^6.10.1",
@@ -37,20 +38,26 @@
   "devDependencies": {
     "@eslint/js": "^9.15.0",
     "@types/bcrypt": "^5.0.2",
-    "@types/eslint__js": "^8.42.3",
-    "@typescript-eslint/eslint-plugin": "^8.14.0",
-    "@typescript-eslint/parser": "^8.14.0",
-    "eslint": "^9.14.0",
-    "eslint-config-prettier": "^9.1.0",
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
+    "@types/eslint__js": "^8.42.3",
     "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/multer": "^1.4.12",
     "@types/nodemailer": "^6.4.17",
+    "@typescript-eslint/eslint-plugin": "^8.14.0",
+    "@typescript-eslint/parser": "^8.14.0",
+    "eslint": "^9.14.0",
+    "eslint-config-prettier": "^9.1.0",
     "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.14.0"
+  },
+  "_moduleAliases": {
+    "@src": "src",
+    "@app": "src/app",
+    "@utils": "src/app/utils"
   }
+
 }

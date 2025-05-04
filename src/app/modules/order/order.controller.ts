@@ -6,18 +6,18 @@ import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 import { sendResponse } from '../../utils/sendResponse';
 import { OrderService } from './order.service';
 
-// const createOrder = catchAsync(async (req, res) => {
-// // console.log(req.body);
-//   const result = await OrderService.createOrderIntoDB(req.body);
+const createOrder = catchAsync(async (req, res) => {
+// console.log(req.body);
+  const result = await OrderService.createOrderIntoDB(req.body);
 
-//   // console.log({result});
-//   sendResponse.sendCreateDataResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'Order is created succesfully',
-//     data: result,
-//   });
-// });
+  // console.log({result});
+  sendResponse.sendCreateDataResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Order is created succesfully',
+    data: result,
+  });
+});
 
 const successOrder = catchAsync(async (req, res) => {
   const { transactionId } = req.params;
@@ -80,15 +80,21 @@ const prescriptionUpload = catchAsync(async (req, res) => {
 
   // File info
   const file = req.file;
-  const filePath = file.path; // path where the file is stored locally
+  // const filePath = file.path; // path where the file is stored locally
   const imageName = `prescription-${Date.now()}`; // Unique name for the uploaded file
 
   try {
     // Upload to Cloudinary
-    const result = await sendImageToCloudinary(imageName, filePath);
+    // const result = await sendImageToCloudinary(imageName, filePath);
+
+    // Upload to Cloudinary directly from memory (file.buffer)
+    const result = await sendImageToCloudinary(imageName, file.buffer);
+
+    // Type assertion for result
+    const { secure_url } = result as { secure_url: string };
 
     // Get the URL of the uploaded image
-    const prescriptionUrl = result.secure_url; // Cloudinary provides a secure URL to the uploaded image
+    const prescriptionUrl = secure_url; // Cloudinary provides a secure URL to the uploaded image
 
     // Now, associate the uploaded prescription with the order
     const { orderId } = req.body; // Assuming the order ID is sent in the body of the request
@@ -121,7 +127,7 @@ const prescriptionUpload = catchAsync(async (req, res) => {
 });
 
 export const OrderControllers = {
-  //   createOrder,
+  createOrder,
   getAllOrder,
   updateSingleOrder,
   deleteSingleOrder,

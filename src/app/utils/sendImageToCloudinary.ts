@@ -16,40 +16,59 @@ cloudinary.config({
   api_secret: config.cloudinary_api_secret,
 });
 
-export const sendImageToCloudinary = (imageName: string, path: string): Promise<CloudinaryUploadResponse> => {
+// export const sendImageToCloudinary = (imageName: string, path: string): Promise<CloudinaryUploadResponse> => {
+//   return new Promise((resolve, reject) => {
+//     cloudinary.uploader.upload(
+//       path,
+//       { public_id: imageName },
+//       function (error, result) {
+//         if (error) {
+//           reject(error);
+//         } else {
+//           // Type the result to CloudinaryUploadResponse
+//           resolve(result as CloudinaryUploadResponse); // Type assertion here
+//         }
+
+//         // Delete the file asynchronously
+//         fs.unlink(path, (err) => {
+//           if (err) {
+//             console.log(err);
+//           } else {
+//             console.log('File is deleted.');
+//           }
+//         });
+//       },
+//     );
+//   });
+// };
+
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, process.cwd() + '/uploads/');
+//   },
+//   filename: function (req, file, cb) {
+//     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+//     cb(null, file.fieldname + '-' + uniqueSuffix);
+//   },
+// });
+
+//* Upload image directly to Cloudinary using memory storage
+export const sendImageToCloudinary = (imageName: string, buffer: Buffer): Promise<CloudinaryUploadResponse> => {
   return new Promise((resolve, reject) => {
-    cloudinary.uploader.upload(
-      path,
+    cloudinary.uploader.upload_stream(
       { public_id: imageName },
-      function (error, result) {
+      (error, result) => {
         if (error) {
           reject(error);
         } else {
-          // Type the result to CloudinaryUploadResponse
           resolve(result as CloudinaryUploadResponse); // Type assertion here
         }
-
-        // Delete the file asynchronously
-        fs.unlink(path, (err) => {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log('File is deleted.');
-          }
-        });
-      },
-    );
+      }
+    ).end(buffer); // Upload the buffer directly to Cloudinary
   });
 };
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, process.cwd() + '/uploads/');
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, file.fieldname + '-' + uniqueSuffix);
-  },
-});
+//* Multer memory storage setup (no need for physical file storage)
+const storage = multer.memoryStorage();
 
 export const upload = multer({ storage: storage });

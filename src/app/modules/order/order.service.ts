@@ -1,99 +1,106 @@
 import httpStatus from 'http-status';
-import { Types } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import AppError from '../../errors/AppErrors';
 import { TOrder } from './order.interface';
 import { Order } from './order.model';
+import Medicine from '../medicine/medicine.model';
+import config from '../../config';
+import SSLCommerzPayment from 'sslcommerz-lts';
+import { UserServices } from '../user/user.service';
+import { v4 as uuidv4 } from 'uuid';
 
-// const createOrderIntoDB = async (payload: TOrder) => {
-//     // console.log(payload);
-//     const session = await mongoose.startSession();
+const createOrderIntoDB = async (payload: TOrder) => {
+  // console.log(payload);
+  const session = await mongoose.startSession();
 
-//     try {
-//         session.startTransaction();
-//         const user_id = payload.user.toString();
-//         const productId = payload.products[0].product;
-//         const orderQuantity = payload.products[0].quantity;
+  try {
+    session.startTransaction();
+    const user_id = payload.user.toString();
+    const productId = payload.products[0].product;
+    const orderQuantity = payload.products[0].quantity;
 
-//         const DBuser = await UserServices.getSingleUser(user_id);
-//         const transactionId = `${uuidv4()}-${Date.now()}`;
+    const DBuser = await UserServices.getSingleUser(user_id);
+    const transactionId = `${uuidv4()}-${Date.now()}`;
 
-//         const product = await Product.findById(productId);
+    const product = await Medicine.findById(productId);
 
-//         if (!product) {
-//             throw new AppError(httpStatus.NOT_FOUND, 'Product not found');
-//         }
+    if (!product) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Product not found');
+    }
 
-//         if (product.quantity === 0) {
-//             throw new AppError(httpStatus.BAD_REQUEST, 'Product is out of stock');
-//         }
+    if (product.quantity === 0) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Product is out of stock');
+    }
 
-//         if (product.quantity < orderQuantity) {
-//             throw new AppError(httpStatus.BAD_REQUEST, 'Not enough stock available');
-//         }
+    if (product.quantity < orderQuantity) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Not enough stock available');
+    }
 
-//         const data = {
-//             total_amount: payload.totalPrice,
-//             currency: 'BDT',
-//             tran_id: transactionId,
-//             success_url: `${process.env.API_BASE_URL}/api/orders/success/${transactionId}`,
-//             fail_url: `${process.env.API_BASE_URL}/api/orders/fail/${transactionId}`,
-//             cancel_url: `${process.env.API_BASE_URL}/api/orders/cancel/${transactionId}`,
-//             ipn_url: 'http://localhost:3030/ipn',
-//             shipping_method: 'NO',
-//             product_name: product.name,
-//             product_category: 'Physical Goods',
-//             product_profile: 'general',
-//             // cus_name: DBuser?.name,
-//             // cus_email: DBuser?.email,
-//             cus_add1: 'Dhaka',
-//             cus_add2: 'Dhaka',
-//             cus_city: 'Dhaka',
-//             cus_state: 'Dhaka',
-//             cus_postcode: '1000',
-//             cus_country: 'Bangladesh',
-//             cus_phone: '01711111111',
-//             cus_fax: '01711111111',
-//             ship_name: 'Customer Name',
-//             ship_add1: 'Dhaka',
-//             ship_add2: 'Dhaka',
-//             ship_city: 'Dhaka',
-//             ship_state: 'Dhaka',
-//             ship_postcode: 1000,
-//             ship_country: 'Bangladesh',
-//         };
+    const data = {
+      total_amount: payload.totalPrice,
+      currency: 'BDT',
+      tran_id: transactionId,
+      success_url: `${process.env.API_BASE_URL}/api/orders/success/${transactionId}`,
+      fail_url: `${process.env.API_BASE_URL}/api/orders/fail/${transactionId}`,
+      cancel_url: `${process.env.API_BASE_URL}/api/orders/cancel/${transactionId}`,
+      shipping_method: 'NO',
+      product_name: product.name,
+      product_category: 'Physical Goods',
+      product_profile: 'general',
+      cus_name: DBuser?.name ?? 'Unknown',
+      cus_email: DBuser?.email ?? 'unknown@example.com',
+      cus_add1: 'Dhaka',
+      cus_add2: 'Bangladesh',
+      cus_city: 'Dhaka',
+      cus_state: 'Dhaka',
+      cus_postcode: '1000',
+      cus_country: 'Bangladesh',
+      cus_phone: '01711111111',
+      cus_fax: '01711111111',
+      ship_name: 'Customer Name',
+      ship_add1: 'Dhaka',
+      ship_add2: 'Bangladesh',
+      ship_city: 'Dhaka',
+      ship_state: 'Dhaka',
+      ship_postcode: '1000',
+      ship_country: 'Bangladesh',
+      value_a: 'ref001',
+      value_b: 'ref002',
+      value_c: 'ref003',
+      value_d: 'ref004',
+    };
 
-//         const sslcz = new SSLCommerzPayment(
-//             config.store_id!,
-//             config.store_pass!,
-//             config.is_live
-//         );
+    const sslcz = new SSLCommerzPayment(
+      config.store_id!,
+      config.store_pass!,
+      config.is_live
+    );
 
-//         const apiResponse = await sslcz.init(data);
-//         const GatewayPageURL = apiResponse.GatewayPageURL;
+    const apiResponse = await sslcz.init(data);
+    const GatewayPageURL = apiResponse.GatewayPageURL;
 
-//         const orderData = { ...payload, transactionId };
-//         const createdOrder = await Order.create([orderData], { session });
+    const orderData = { ...payload, transactionId };
+    const createdOrder = await Order.create([orderData], { session });
 
-//         await Product.findByIdAndUpdate(
-//             productId,
-//             { $inc: { quantity: -orderQuantity } },
-//             { session }
-//         );
+    await Medicine.findByIdAndUpdate(
+      productId,
+      { $inc: { quantity: -orderQuantity } },
+      { session }
+    );
 
-//         await session.commitTransaction();
-//         session.endSession();
+    await session.commitTransaction();
+    session.endSession();
 
-//         return {
-//             GatewayPageURL,
-//             order: createdOrder[0]
-//         };
-
-//     } catch (error) {
-//         await session.abortTransaction();
-//         session.endSession();
-//         throw error;
-//     }
-// };
+    return {
+      GatewayPageURL,
+      order: createdOrder[0],
+    };
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
+  }
+};
 
 const successOrderIntoDB = async (transactionId: string) => {
   // Find the order with the given transactionId
@@ -188,10 +195,16 @@ const updateOrderPrescription = async (
   prescriptionUrl: string
 ) => {
   try {
+    //* Ensure orderId is valid ObjectId
+    if (!Types.ObjectId.isValid(orderId)) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Invalid order ID');
+    }
+
+    //* Update the prescription URL in the order
     const order = await Order.findByIdAndUpdate(
       orderId,
-      { prescriptionUrl }, // Update the prescriptionUrl
-      { new: true } // Return the updated order
+      { prescriptionUrl }, //? Update the prescriptionUrl
+      { new: true } //? Return the updated order
     );
 
     if (!order) {
@@ -210,7 +223,7 @@ const updateOrderPrescription = async (
 
 export const OrderService = {
   getAllOrdersFromDB,
-  // createOrderIntoDB,
+  createOrderIntoDB,
   updateOrderIntoDB,
   deleteOrderFromDB,
   successOrderIntoDB,

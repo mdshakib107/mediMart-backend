@@ -1,17 +1,19 @@
-import express from 'express';
-import validateRequest from '../../middlewares/validateRequest';
+import express, { NextFunction, Request, Response } from 'express';
 import { upload } from '../../utils/sendImageToCloudinary';
+import validateRequest from '../../middlewares/validateRequest';
 import { OrderControllers } from './order.controller';
 import { OrderValidation } from './order.validation';
+import { USER_ROLE } from '../user/user.constant';
+import auth from '../../middlewares/auth';
 
 const router = express.Router();
 
-// router.post('/create-order',  auth( USER_ROLE.admin,USER_ROLE.customer),
-//   upload.single('file'),
-//   (req: Request, res: Response, next: NextFunction) => {
-//     req.body = JSON.parse(req.body.data);
-//     next();
-//   }, validateRequest(OrderValidation.orderValidationSchema), OrderControllers.createOrder)
+router.post('/create-order',  auth( USER_ROLE.admin,USER_ROLE.customer),
+  upload.single('file'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  }, validateRequest(OrderValidation.orderValidationSchema), OrderControllers.createOrder)
 
 router.get('/', OrderControllers.getAllOrder);
 router.patch(
